@@ -32,7 +32,7 @@ jobs:
           ref: ${{ env.LIB_REF }}
           path: .lib/offline-translate
 
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
 
       - name: Toolchain
         run: |
