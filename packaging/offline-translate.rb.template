@@ -1,0 +1,23 @@
+# Homebrew cask. Publish the DMG as a GitHub release asset, then put this file in a tap
+# (e.g. github.com/asimon655/homebrew-tap/Casks/offline-translate.rb):
+#   brew install --cask asimon655/tap/offline-translate
+cask "offline-translate" do
+  version "__VERSION__"
+  sha256 "__SHA256__"
+
+  url "https://github.com/asimon655/offline-translate-mac/releases/download/v#{version}/OfflineTranslate-#{version}.dmg"
+  name "Offline Translate"
+  desc "Translate selected text offline with Google Translate's on-device language packs"
+  homepage "https://github.com/asimon655/offline-translate-mac"
+
+  depends_on macos: ">= :sonoma"
+  depends_on arch: :arm64
+
+  app "Offline Translate.app"
+
+  zap trash: [
+    "~/Library/Application Support/OfflineTranslate",
+    "~/Library/Caches/OfflineTranslate",
+    "~/Library/Preferences/com.asimon655.OfflineTranslate.plist",
+  ]
+end

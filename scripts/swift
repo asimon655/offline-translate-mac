@@ -1,0 +1,23 @@
+#!/bin/bash
+# Runs `swift` with a workaround for a broken Command Line Tools install: stale 2024
+# *.private.swiftinterface files left in .../swift/pm make every Package.swift fail to link
+# ("Undefined symbols ... PackageDescription.Package.__allocating_init").
+# The permanent fix is to delete them:
+#   sudo rm /Library/Developer/CommandLineTools/usr/lib/swift/pm/*/*.swiftmodule/*.private.swiftinterface
+# Until then this uses a copy of the manifest libraries without them.
+set -euo pipefail
+PM="$(dirname "$(dirname "$(xcrun --find swift)")")/lib/swift/pm"
+if ls "$PM"/*/*.swiftmodule/*.private.swiftinterface >/dev/null 2>&1; then
+  ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+  FIXED="$ROOT/.build/pm-libs"
+  STAMP="$(stat -f %m "$PM/ManifestAPI/libPackageDescription.dylib")"
+  if [[ "$(cat "$FIXED/.stamp" 2>/dev/null)" != "$STAMP" ]]; then
+    rm -rf "$FIXED"
+    mkdir -p "$ROOT/.build"
+    cp -R "$PM" "$FIXED"
+    rm -f "$FIXED"/*/*.swiftmodule/*.private.swiftinterface
+    echo "$STAMP" > "$FIXED/.stamp"
+  fi
+  export SWIFTPM_CUSTOM_LIBS_DIR="$FIXED"
+fi
+exec swift "$@"

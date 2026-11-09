@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!-- Not sandboxed: reading other apps' selections (Accessibility) and posting ⌘C don't work in the
+     App Sandbox. No hardened-runtime exceptions are needed: the bundled Python and its extension
+     modules are all signed with the same identity as the app. -->
+<dict/>
+</plist>
