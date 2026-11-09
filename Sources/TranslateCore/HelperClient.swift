@@ -91,6 +91,10 @@ public final class HelperClient: @unchecked Sendable {
         p.terminationHandler = { [weak self] proc in
             outPipe.fileHandleForReading.readabilityHandler = nil
             errPipe.fileHandleForReading.readabilityHandler = nil
+            // Output written just before exit may still be in the pipes; read it so replies and the crash
+            // message aren't lost.
+            self?.received(outPipe.fileHandleForReading.readDataToEndOfFile(), from: proc)
+            self?.receivedStderr(errPipe.fileHandleForReading.readDataToEndOfFile())
             self?.terminated(proc)
         }
         stderrTail = ""
